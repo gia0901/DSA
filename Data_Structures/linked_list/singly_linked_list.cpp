@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 
 struct Node {
@@ -173,3 +172,8 @@ public:
         std::cout << "There is no node with value: " << val << std::endl;
     }
 };
+
+
+int main() {
+
+}
