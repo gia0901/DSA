@@ -5,7 +5,8 @@ struct Node {
     Node* next;
     Node* prev;
     Node() : val(0), prev(nullptr), next(nullptr) {}
-    explicit Node(int x) : val(x), prev(nullptr), next(nullptr) {}
+    Node(int val, Node* prev, Node* next) : val(val), prev(prev), next(next) {}
+    explicit Node(int val) : val(val), prev(nullptr), next(nullptr) {}
 };
 
 class DoublyLinkedList {
@@ -26,6 +27,20 @@ public:
     DoublyLinkedList& operator=(DoublyLinkedList&&) = delete;
 
     size_t size() const { return _size; }
+
+    int front() const {
+        if (_head) {
+            return _head->val;
+        }
+        throw std::out_of_range("list is empty");
+    }
+
+    int back() const {
+        if (_tail) {
+            return _tail->val;
+        }
+        throw std::out_of_range("list is empty");
+    }
 
     void push_back(int val) {
         if (_head == nullptr) {
@@ -81,6 +96,54 @@ public:
             _head->prev = nullptr;
             delete temp;
         }
+        _size--;
+    }
+
+    void insert(int val, size_t pos) {
+        if (pos > _size) {
+            throw std::out_of_range("insert position is not valid");
+        }
+        if (pos == 0) return push_front(val);
+        if (pos == _size) return push_back(val);
+        
+        Node* temp = _head;
+        Node* newNode = new Node(val);
+
+        for (int i = 0; i < pos-1; i++) {
+            temp = temp->next;
+        }
+
+        newNode->next = temp;
+        newNode->prev = temp->prev;
+        temp->prev->next = newNode;
+        temp->prev = newNode;
+        
+        _size++;
+    }
+
+    void erase(size_t pos) {
+        if (pos >= _size) {
+            throw std::out_of_range("insert position is not valid");
+        }
+        if (pos == 0) return pop_front();
+        if (pos == _size-1) return pop_back();
+
+        Node* temp = nullptr;
+        if (pos < _size/2) {
+            temp = _head;
+            for (int i = 0; i < pos; i++) {
+                temp = temp->next;
+            }
+        }
+        else {
+            temp = _tail;
+            for (int i = _size-1; i > pos; i--) {
+                temp = temp->prev;
+            }
+        }
+        temp->prev->next = temp->next;
+        temp->next->prev = temp->prev;
+        delete temp;
         _size--;
     }
 
